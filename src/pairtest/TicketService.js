@@ -11,13 +11,6 @@ export default class TicketService {
   // Calculate the correct amount
   // Calculate the correct numbers of seats
 
-  // Checks
-
-  // Check for maximum no of tickets
-  // Check for an infant should be accompanied by an adult
-  // Authenticated
-
-
   // Actions
 
   // Make seat booking request

@@ -7,9 +7,16 @@ const MAX_TICKET_NUMBER = 25;
 
 export default class TicketValidator {
 
-    validateTicketPurchase(ticketTypeRequests) {
-        this.checkInfantAndChildRules(ticketTypeRequests);
-        this.checkMaxTickets(ticketTypeRequests);
+    validateTicketPurchase(ticketTypeRequests, accountId) {
+        const infantAndChildRules = this.checkInfantAndChildRules(ticketTypeRequests);
+        const maxTicketRules = this.checkMaxTickets(ticketTypeRequests);
+        const accountValid = this.isValidAccount(accountId);
+
+        if (!infantAndChildRules || !maxTicketRules || !accountValid) {
+          throw new ValidationException('Validation failed!');
+        }
+
+        return true;
     }
 
     checkMaxTickets(ticketTypeRequests) {

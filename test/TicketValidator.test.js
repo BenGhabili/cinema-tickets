@@ -1,5 +1,6 @@
-import TicketValidator from "../src/pairtest/validators/TicketValidator";
-import TicketTypeRequest from "../src/pairtest/lib/TicketTypeRequest.js";
+import TicketValidator from '@src/pairtest/validators/TicketValidator';
+import TicketTypeRequest from '@src/pairtest/lib/TicketTypeRequest';
+import ValidationException from '@src/pairtest/lib/ErrorHandling/ValidationException';
 
 const validTicketRequests = [
   new TicketTypeRequest(TicketTypeRequest.ADULT, 2),
@@ -74,19 +75,45 @@ describe('TicketValidator', () => {
 
       expect(result).toBeFalsy();
     });
+  });
 
-    describe('isValidAccount', () => {
-      it('should return true if account is a valid account', () => {
-        const result = ticketValidator.isValidAccount(123);
+  describe('isValidAccount', () => {
+    it('should return true if account is a valid account', () => {
+      const result = ticketValidator.isValidAccount(123);
 
-        expect(result).toBeTruthy();
-      });
+      expect(result).toBeTruthy();
+    });
 
-      it('should return false if account is not a valid account', () => {
-        const result = ticketValidator.isValidAccount(-123);
+    it('should return false if account is not a valid account', () => {
+      const result = ticketValidator.isValidAccount(-123);
 
-        expect(result).toBeFalsy();
-      });
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe('validateTicketPurchase', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('returns true if all of the conditions are met', () => {
+      jest.spyOn(ticketValidator, 'checkMaxTickets').mockReturnValue(true);
+      jest.spyOn(ticketValidator, 'checkInfantAndChildRules').mockReturnValue(true);
+      jest.spyOn(ticketValidator, 'isValidAccount').mockReturnValue(true);
+
+      const result = ticketValidator.validateTicketPurchase([], 123);
+
+      expect(result).toBeTruthy();
+    });
+
+    it('throws an exception if any of the conditions fails', () => {
+      jest.spyOn(ticketValidator, 'checkMaxTickets').mockReturnValue(false);
+      jest.spyOn(ticketValidator, 'checkInfantAndChildRules').mockReturnValue(true);
+      jest.spyOn(ticketValidator, 'isValidAccount').mockReturnValue(true);
+
+      expect(() => {
+        ticketValidator.validateTicketPurchase([], 123);
+      }).toThrow(ValidationException);
     });
   });
 });
