@@ -1,7 +1,7 @@
 import TicketTypeRequest from '../lib/TicketTypeRequest';
 import ValidationException from '../lib/ErrorHandling/ValidationException';
 
-import { countTicketType } from '../helpers/TicketHelpers.js';
+import { countTicketByType } from '../helpers/TicketHelpers.js';
 
 const MAX_TICKET_NUMBER = 25;
 
@@ -32,8 +32,8 @@ export default class TicketValidator {
     }
 
     checkInfantAndChildRules(ticketTypeRequests) {
-      const adultCount = countTicketType(ticketTypeRequests, TicketTypeRequest.ADULT);
-      const infantCount = countTicketType(ticketTypeRequests, TicketTypeRequest.INFANT);
+      const adultCount = countTicketByType(ticketTypeRequests, TicketTypeRequest.ADULT);
+      const infantCount = countTicketByType(ticketTypeRequests, TicketTypeRequest.INFANT);
 
       const hasChildOrInfant = ticketTypeRequests.some(
         (request) => request.getTicketType() === TicketTypeRequest.CHILD || request.getTicketType() === TicketTypeRequest.INFANT
