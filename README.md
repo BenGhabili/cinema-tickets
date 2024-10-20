@@ -18,8 +18,8 @@ This project implements a **Cinema Ticket Service** in Node.js. The service is r
 ### Setup
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/cinema-ticket-service.git
-cd cinema-tickets/cinema-tickets-javascript
+git clone https://github.com/BenGhabili/cinema-tickets.git
+cd cinema-tickets
 ```
 
 2. Install dependencies:
