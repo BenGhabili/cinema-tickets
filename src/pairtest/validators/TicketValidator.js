@@ -2,8 +2,7 @@ import TicketTypeRequest from '../lib/TicketTypeRequest';
 import ValidationException from '../lib/ErrorHandling/ValidationException';
 
 import { countTicketByType } from '../helpers/TicketHelpers.js';
-
-const MAX_TICKET_NUMBER = 25;
+import { MAX_TICKET_NUMBER } from '@src/pairtest/constants';
 
 export default class TicketValidator {
 

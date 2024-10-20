@@ -1,23 +1,46 @@
-import TicketTypeRequest from './lib/TicketTypeRequest.js';
-import InvalidPurchaseException from './lib/ErrorHandling/InvalidPurchaseException.js';
+import Logger from '@src/pairtest/lib/Observability/Logger';
+import TicketValidator from '@src/pairtest/validators/TicketValidator';
+import TicketPaymentService from '@src/thirdparty/paymentgateway/TicketPaymentService';
+import SeatReservationService from '@src/thirdparty/seatbooking/SeatReservationService';
+import InvalidPurchaseException from '@src/pairtest/lib/ErrorHandling/InvalidPurchaseException';
+import ValidationException from "@src/pairtest/lib/ErrorHandling/ValidationException";
+
+import { countTotalCost, calculateNumberOfSeats } from './helpers/TicketHelpers';
 
 export default class TicketService {
-  /**
-   * Should only have private methods other than the one below.
-   */
+  constructor(
+    ticketValidator = new TicketValidator(),
+    ticketPaymentService = new TicketPaymentService(),
+    seatReservationService = new SeatReservationService()
+  ) {
+    this.ticketValidator = ticketValidator;
+    this.ticketPaymentService = ticketPaymentService;
+    this.seatReservationService = seatReservationService;
+  }
 
-  // Calculations
+  async purchaseTickets(accountId, ...ticketTypeRequests) {
+    try {
 
-  // Calculate the correct amount
-  // Calculate the correct numbers of seats
+      this.ticketValidator.validateTicketPurchase(ticketTypeRequests, accountId);
 
-  // Actions
+      const totalCost = countTotalCost(ticketTypeRequests);
 
-  // Make seat booking request
-  // Make payment request
+      const totalSeats = calculateNumberOfSeats(ticketTypeRequests);
 
+      await this.seatReservationService.reserveSeat(accountId, totalSeats);
 
-  purchaseTickets(accountId, ...ticketTypeRequests) {
-    // throws InvalidPurchaseException
+      await this.ticketPaymentService.makePayment(accountId, totalCost);
+
+      return true;
+
+    } catch (error) {
+      if (error instanceof ValidationException) {
+        Logger.error('Request validation failed:', error.message);
+      } else {
+        Logger.error('An unexpected error occurred:', error.message);
+      }
+
+      throw new InvalidPurchaseException(error.message);
+    }
   }
 }
