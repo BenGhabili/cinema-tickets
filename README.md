@@ -69,6 +69,3 @@ Unit tests are written using Jest. The tests cover all important scenarios such 
 - Implement more comprehensive business logic around payment and seat reservations.
 - Add API endpoints to expose the service via REST.
 - Integrate real logging using tools like Winston.
-
-## Contact
-For questions, please reach out to sghabili@gmail.com
